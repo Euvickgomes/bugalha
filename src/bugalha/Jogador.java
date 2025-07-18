@@ -1,6 +1,7 @@
 package bugalha;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Jogador {
@@ -24,29 +25,32 @@ public class Jogador {
     }
 
     // Adiciona um dado em uma coluna específica
-    public boolean adicionarDado(int coluna, int valor, Jogador adversario) {
-        if (coluna < 0 || coluna >= 3) {
-            System.out.println("Coluna inválida!");
-            return false;
-        }
-        if (colunas[coluna].size() >= 3) {
-            System.out.println("Coluna cheia!");
-            return false;
-        }
-        colunas[coluna].add(valor);
-        
-        // verifica no outro tabuleiro se tem numeros iguasi
-        ArrayList<Integer> colunaAdversaria = adversario.getColunas()[coluna];
-        for (int i = 0; i < colunaAdversaria.size(); i++) {
-            if (colunaAdversaria.get(i) == valor) {
-                colunaAdversaria.remove(i); // tira o valor igual da coluna
-                System.out.println( adversario.getNome() + " teve um " + valor + " anulado na coluna " + coluna);
-                break;
-            }
-        }
-        
-        return true;
+  public boolean adicionarDado(int coluna, int valor, Jogador adversario) {
+    if (coluna < 0 || coluna >= 3 || colunas[coluna].size() >= 3) {
+        return false;
     }
+
+    // Adiciona o valor à coluna
+    colunas[coluna].add(valor);
+
+    // Verifica e remove valores iguais na mesma coluna do adversário
+    List<Integer> colunaAdversario = adversario.colunas[coluna];
+    boolean houveRemocao = false;
+
+    // Percorre de trás pra frente pra evitar problemas ao remover elementos
+    for (int i = colunaAdversario.size() - 1; i >= 0; i--) {
+        if (colunaAdversario.get(i) == valor) {
+            colunaAdversario.remove(i);
+            houveRemocao = true;
+        }
+    }
+
+    if (houveRemocao) {
+        System.out.println(adversario.getNome() + " teve um " + valor + " anulado na coluna " + coluna);
+    }
+        return true;
+
+}
 
     // Exibe o tabuleiro de maneira simples (só para testes)
     public void mostrarTabuleiro() {
